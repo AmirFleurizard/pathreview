@@ -34,3 +34,20 @@ If this is my first open source contribution: I'm choosing Tier 1.
 [X] I've checked the issue comments and the ledger's Claims count, and I'm fine with how many others are on this issue.
 [X] I've estimated the time this will take and I'm confident I can complete it before the Week 9 deadline.
 [X] This issue has no open blockers or dependencies on other unresolved issues.
+
+
+## Week 8 — Reproduction & solution planning
+
+**Reproduction commit link:** 
+
+**Reproduction summary:**
+This is a feature gap, not a bug, so "reproduction" meant confirming the gap rather than triggering an error: `tests/benchmarks/` contains only an empty `__init__.py`, `pytest-benchmark` is listed as a dev dependency in `pyproject.toml` but is never imported anywhere in the codebase, and there is no existing code path (in `ingestion/pipeline.py` or elsewhere) that ingests a full portfolio (resume + multiple repos) in one call — confirming the benchmark test named in the issue genuinely does not exist yet.
+
+**PLAN.md link:** `https://github.com/AmirFleurizard/pathreview/blob/feature/112-ingestion-performance-benchmark/PLAN.md`.
+
+**Walkthrough video (recommended):** [link to your Loom video, ≤2 min — recommended, not graded]
+
+**Blockers or open questions:**
+- `IngestionPipeline._check_skip` (`ingestion/pipeline.py:280`) queries `db_session` in a way that, if mocked naively (bare `Mock()`), makes every ingestion silently skip — need to make sure the benchmark's mock db session returns `None` from `.first()` so it measures real work, and add a correctness assertion (not just timing) to catch this failing silently in the future.
+- Unsure whether this benchmark should be wired into `ci.yml` (it currently only runs `test-unit`/`test-integration`) or stay a local/manual `make test-benchmark` check — benchmark timing tends to be noisy on shared CI runners. Leaning toward local-only for now but want to confirm with @jamjamgobambam before Week 9.
+- Want to verify the 30s threshold can actually catch a regression (not just always pass trivially) by temporarily introducing a slowdown locally and confirming the test fails, before considering this done.
