@@ -8,7 +8,7 @@ from ingestion.pipeline import IngestionPipeline
 
 
 @pytest.mark.benchmark
-def test_ingestion_performance(benchmark):
+def test_ingestion_performance(benchmark, large_portfolio):
     """Benchmark: ingest a portfolio of 5 repos + 1 resume and assert mean <= 30s.
 
     This test uses lightweight parser/strategy mocks and a mocked batch
@@ -30,13 +30,11 @@ def test_ingestion_performance(benchmark):
     pipeline.resume_parser.parse = lambda content: SimpleNamespace(text=(content.decode() if isinstance(content, bytes) else content), metadata={})
     pipeline.strategy_selector.chunk = lambda text, metadata: [{"text": text, "metadata": metadata}]
 
-    resume_content = b"Sample resume content\n" * 100
+    repos, resume_content = large_portfolio
     repo_template = {"description": "Sample repo content\n" * 100, "name": "repo"}
 
     def run():
-        for i in range(5):
-            repo = dict(repo_template)
-            repo["name"] = f"repo{i}"
+        for repo in repos:
             pipeline.ingest_repo_metadata("profile1", repo)
         pipeline.ingest_resume("profile1", resume_content, "resume.pdf")
 
