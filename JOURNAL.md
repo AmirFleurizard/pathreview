@@ -38,7 +38,7 @@ If this is my first open source contribution: I'm choosing Tier 1.
 
 ## Week 8 — Reproduction & solution planning
 
-**Reproduction commit link:** 
+**Reproduction commit link:** https://github.com/AmirFleurizard/pathreview/commit/39a8a8dc1d01a99a2ca5390487b30ede7aabaa0f
 
 **Reproduction summary:**
 This is a feature gap, not a bug, so "reproduction" meant confirming the gap rather than triggering an error: `tests/benchmarks/` contains only an empty `__init__.py`, `pytest-benchmark` is listed as a dev dependency in `pyproject.toml` but is never imported anywhere in the codebase, and there is no existing code path (in `ingestion/pipeline.py` or elsewhere) that ingests a full portfolio (resume + multiple repos) in one call — confirming the benchmark test named in the issue genuinely does not exist yet.
@@ -51,3 +51,39 @@ This is a feature gap, not a bug, so "reproduction" meant confirming the gap rat
 - `IngestionPipeline._check_skip` (`ingestion/pipeline.py:280`) queries `db_session` in a way that, if mocked naively (bare `Mock()`), makes every ingestion silently skip — need to make sure the benchmark's mock db session returns `None` from `.first()` so it measures real work, and add a correctness assertion (not just timing) to catch this failing silently in the future.
 - Unsure whether this benchmark should be wired into `ci.yml` (it currently only runs `test-unit`/`test-integration`) or stay a local/manual `make test-benchmark` check — benchmark timing tends to be noisy on shared CI runners. Leaning toward local-only for now but want to confirm with @jamjamgobambam before Week 9.
 - Want to verify the 30s threshold can actually catch a regression (not just always pass trivially) by temporarily introducing a slowdown locally and confirming the test fails, before considering this done.
+
+## Week 9 — Solution building & PR submission
+
+### Check-in 1 (mid-week)
+
+**Current progress:**
+- Added `tests/benchmarks/test_ingestion_performance.py` and `tests/benchmarks/conftest.py` and committed them on `feature/112-ingestion-performance-benchmark`.
+- Created a local `.venv` and installed dev dependencies so linters and `pytest-benchmark` are available.
+- Ran a smoke benchmark locally (passed) and ran `make check` / `make test-unit` to capture baseline failures; several pre-existing linter and unit-test failures unrelated to this work were observed and documented.
+
+**Next steps:**
+- Iterate on the benchmark harness if needed and verify the test fails when a deliberate slowdown is introduced locally.
+- Open a draft PR and request peer/mentor feedback; update the PR with notes about pre-existing failures so graders and reviewers know these are unrelated to this change.
+- Add the final (Sunday) check-in and finalize the PR after addressing feedback.
+
+**Blockers:**
+- The repository currently has multiple unrelated linter and unit-test failures; these are pre-existing and mean CI may show failures not caused by this benchmark addition.
+- Attempted `gh pr create` via CLI failed due to environment/argument limits; I will open the draft PR via the GitHub web UI if needed.
+
+---
+
+### Check-in 2 (end of week)
+
+**PR link:** [link to your submitted pull request]
+
+**Branch:** [the branch name you worked on, e.g. `fix/123-short-description`]
+
+**What you built:**
+[1–3 sentences summarizing what your fix does and how it works]
+
+**Tests added or updated:**
+[Which test files did you touch? What do they cover?]
+
+**Self-review confirmation:** [ ] make check passes  [ ] make test-unit passes
+
+**Draft PR feedback received from:** [name or Slack handle, or "none"]
