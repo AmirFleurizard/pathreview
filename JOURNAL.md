@@ -74,7 +74,7 @@ This is a feature gap, not a bug, so "reproduction" meant confirming the gap rat
 
 ### Check-in 2 (end of week)
 
-**PR link:** TBD — I will open the draft PR and paste the link here.
+**PR link:** https://github.com/ascherj/pathreview/pull/865
 
 **Branch:** feature/112-ingestion-performance-benchmark
 
