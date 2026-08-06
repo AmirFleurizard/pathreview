@@ -74,16 +74,19 @@ This is a feature gap, not a bug, so "reproduction" meant confirming the gap rat
 
 ### Check-in 2 (end of week)
 
-**PR link:** [link to your submitted pull request]
+**PR link:** TBD — I will open the draft PR and paste the link here.
 
-**Branch:** [the branch name you worked on, e.g. `fix/123-short-description`]
+**Branch:** feature/112-ingestion-performance-benchmark
 
 **What you built:**
-[1–3 sentences summarizing what your fix does and how it works]
+Added a `pytest-benchmark` test that measures the ingestion pipeline processing a representative portfolio (five repositories plus one resume). The benchmark uses lightweight parser and batch-processor mocks to focus on orchestration overhead and asserts the mean ingestion time across measured runs is <= 30 seconds.
 
 **Tests added or updated:**
-[Which test files did you touch? What do they cover?]
+- `tests/benchmarks/test_ingestion_performance.py` — benchmark that runs a 5-repo + resume ingestion workload and asserts mean runtime <= 30s.
+- `tests/benchmarks/conftest.py` — fixture providing the large portfolio (5 repos + resume) used by the benchmark.
 
 **Self-review confirmation:** [ ] make check passes  [ ] make test-unit passes
 
-**Draft PR feedback received from:** [name or Slack handle, or "none"]
+Notes: running `make check` and `make test-unit` before and after these changes revealed multiple pre-existing linter and unit-test failures unrelated to this work. This contribution only adds benchmark tests and fixtures and does not modify production code; it did not introduce new failures locally. See the "Reproduction & solution planning" section above for details and the baseline test outputs.
+
+**Draft PR feedback received from:** none
