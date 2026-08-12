@@ -90,3 +90,33 @@ Added a `pytest-benchmark` test that measures the ingestion pipeline processing 
 Notes: running `make check` and `make test-unit` before and after these changes revealed multiple pre-existing linter and unit-test failures unrelated to this work. This contribution only adds benchmark tests and fixtures and does not modify production code; it did not introduce new failures locally. See the "Reproduction & solution planning" section above for details and the baseline test outputs.
 
 **Draft PR feedback received from:** none
+
+## Week 10 — Iteration & reflection
+
+### Reviewer feedback
+
+**Feedback received:** [ ] Yes  [X] No — still awaiting review
+
+**Summary of feedback:**
+No review came in.
+
+**How you responded:**
+
+---
+
+### Reflection
+
+**What was harder than you expected?**
+The hardest part was turning a feature gap into a reliable benchmark instead of a simple unit test. I had to understand the ingestion pipeline well enough to mock the right components, especially `db_session` and the skip-check logic, so the benchmark measured real work rather than a no-op path.
+
+**What did you learn about working in a large codebase?**
+I learned that a large repository often has hidden assumptions and pre-existing failures that affect how you verify a change. It’s important to scope the work cleanly, avoid touching unrelated production code, and document the baseline state clearly so reviewers know what was already broken.
+
+**How did AI tools help — and where did they fall short?**
+AI assistance was useful for organizing the benchmark test and summarizing the work in journal form, but it was less helpful for the repository’s specific runtime and CI trade-offs. I still needed to inspect the actual ingestion code and run local experiments to confirm the benchmark behavior.
+
+**What would you do differently if you started over?**
+I would validate the benchmark harness earlier with a deliberate slowdown and ask about CI placement up front. That would have made it easier to decide whether this should be a local regression check only or something to integrate more directly into the existing test pipeline.
+
+**What are you most proud of from this module?**
+I’m most proud of adding a practical, regression-focused benchmark that targets the ingestion pipeline without changing production logic, and of recording the baseline test state transparently so the contribution is easier to review. It was fun getting to work on a open source project like this and gain semi real world experience.
